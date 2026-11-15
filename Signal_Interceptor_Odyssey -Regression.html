@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signal Interceptor: Deep Space Data Odyssey</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060d;--pn:#0a1222;--ln:#1d3354;--tx:#e6f1ff;--mu:#8aa0c0;--cy:#35e0ff;--pu:#a78bfa;--gr:#34f5a0;--am:#ffb020;--rd:#ff4d6d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Chakra Petch',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,.hd{font-family:Orbitron,'Segoe UI',sans-serif}
+#bg{position:fixed;inset:0;z-index:0}
+.scr{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .7s,transform .7s;transform:scale(1.06);overflow:auto;gap:14px}
+.scr.on{opacity:1;pointer-events:auto;transform:none}
+#boot{font-size:.85rem;color:var(--gr);min-height:4.6em;width:min(470px,92vw);white-space:pre-wrap}
+h1{font-size:clamp(1.7rem,6vw,3.4rem);letter-spacing:.2em;text-align:center;text-shadow:0 0 26px var(--cy);opacity:0;line-height:1.2}
+h1.show{animation:ex 2.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ex{from{letter-spacing:1em;opacity:0;filter:blur(9px)}to{letter-spacing:.2em;opacity:1;filter:none}}
+.tag{color:var(--mu);text-align:center;max-width:520px;line-height:1.5}
+.card{background:rgba(10,18,34,.9);border:1px solid var(--ln);border-radius:14px;padding:20px;width:min(440px,94vw);display:flex;flex-direction:column;gap:11px;box-shadow:0 0 40px rgba(53,224,255,.13)}
+#c1{opacity:0;transform:translateY(22px);transition:all .9s}#c1.show{opacity:1;transform:none}
+.hs{border:1px solid rgba(255,176,32,.45);background:rgba(255,176,32,.1);border-radius:9px;padding:9px 12px;display:flex;justify-content:space-between;font-size:.9rem}.hs b{color:var(--am)}
+input[type=text],input:not([type]),select,textarea{width:100%;background:#050912;border:1px solid var(--ln);color:#fff;padding:11px 13px;border-radius:9px;font:inherit}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.b{background:linear-gradient(135deg,var(--cy),#6d6cff);color:#03101c;border:0;border-radius:9px;padding:12px 16px;font:700 1rem Orbitron,sans-serif;cursor:pointer;transition:transform .15s,filter .2s}
+.b:hover{transform:translateY(-2px);filter:brightness(1.1)}.b.g{background:transparent;color:var(--cy);border:1px solid var(--cy)}.b.p{background:rgba(167,139,250,.15);color:#e4dcff;border:1px solid var(--pu)}.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
+#cdn{font:900 min(34vw,9rem) Orbitron,sans-serif;color:var(--cy);text-shadow:0 0 50px var(--cy);animation:pop .8s ease-out}
+@keyframes pop{0%{transform:scale(.3);opacity:0}55%{transform:scale(1.18);opacity:1}100%{transform:scale(1)}}
+#cdt{letter-spacing:.3em;color:var(--mu);font-size:.95rem;text-align:center}
+#fl{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30;transition:opacity .9s}
+#game{justify-content:flex-start;gap:10px;padding:10px}
+.hud{width:min(1000px,100%);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.pill{background:var(--pn);border:1px solid var(--ln);border-radius:999px;padding:6px 13px;font-size:.88rem;font-weight:600}
+.pill b{color:var(--cy)}
+.info{width:min(1000px,100%);background:var(--pn);border:1px solid var(--ln);border-left:4px solid var(--pu);border-radius:10px;padding:10px 14px}
+.info h2{font-size:1.05rem;margin-bottom:4px}.info p{color:var(--mu);font-size:.93rem;line-height:1.45}
+.prog{display:flex;gap:3px;width:min(1000px,100%)}.prog i{flex:1;height:6px;border-radius:3px;background:var(--ln)}.prog i.d{background:var(--gr)}.prog i.c{background:var(--cy);box-shadow:0 0 8px var(--cy)}
+.main{width:min(1000px,100%);display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,1fr);gap:10px}
+@media(max-width:820px){.main{grid-template-columns:1fr}}
+#cvs{width:100%;height:auto;border:1px solid var(--ln);border-radius:12px;display:block;touch-action:none}
+.side{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:13px;display:flex;flex-direction:column;gap:9px}
+.side label{font-size:.88rem;color:var(--mu);display:flex;justify-content:space-between}.side label b{color:var(--am)}
+input[type=range]{width:100%;accent-color:var(--cy)}
+.bx{display:grid;grid-template-columns:1fr 1fr;gap:7px}.bx div{background:#050912;border:1px solid var(--ln);border-radius:8px;padding:7px;font-size:.78rem;color:var(--mu)}.bx b{display:block;font:700 1rem Orbitron,sans-serif;color:var(--cy);margin-top:2px}
+.bx .n{grid-column:1/3;color:var(--tx);font-size:.82rem;line-height:1.4}
+.dp{display:flex;flex-direction:column;align-items:center;gap:5px}.dp div{display:flex;gap:5px}.dp button{width:52px;height:46px;background:#050912;color:var(--cy);border:1px solid var(--cy);border-radius:8px;font-size:1.2rem;cursor:pointer}
+.md{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(2,4,10,.82);padding:14px;overflow:auto}.md.on{display:flex}
+.mb{background:var(--pn);border:1px solid var(--cy);border-radius:16px;padding:22px;width:min(520px,100%);max-height:94vh;overflow:auto;display:flex;flex-direction:column;gap:11px;text-align:center;animation:pop .45s ease-out;box-shadow:0 0 50px rgba(53,224,255,.25)}
+.mb.w{border-color:var(--gr)}.mb.l{border-color:var(--rd)}.mb h2{font-size:1.4rem}.mb p{color:var(--mu);line-height:1.5}.mb .em{font-size:3rem}
+.mb .ds{background:rgba(52,245,160,.09);border:1px solid rgba(52,245,160,.35);border-radius:9px;padding:10px;color:var(--tx);font-size:.92rem;text-align:left}
+.st2{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.st2 span{background:#050912;border:1px solid var(--ln);border-radius:999px;padding:4px 11px;font-size:.82rem}
+.opt{background:#050912;border:1px solid var(--ln);color:var(--tx);border-radius:9px;padding:11px;font:inherit;cursor:pointer;text-align:left}.opt:hover:not(:disabled){border-color:var(--cy)}.opt:disabled{opacity:.3}.opt.ok{border-color:var(--gr);background:rgba(52,245,160,.15)}
+.tabs{display:flex;gap:6px;justify-content:center}.tabs button{flex:1}
+.pane{text-align:left;color:var(--mu);font-size:.9rem;line-height:1.55;display:none}.pane.on{display:block}.pane b{color:var(--tx)}.pane li{margin-left:18px}
+#tt{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(90px);z-index:40;background:#0d1b33;border:1px solid var(--am);color:var(--tx);padding:11px 16px;border-radius:10px;max-width:92vw;transition:transform .35s;text-align:center}#tt.on{transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style></head><body>
+<canvas id="bg"></canvas><div id="fl"></div><div id="tt"></div>
+
+<section class="scr on" id="intro">
+  <div id="boot"></div>
+  <h1 id="ttl">SIGNAL<br>INTERCEPTOR</h1>
+  <p class="tag" id="tg" style="opacity:0;transition:opacity 1s">Deep Space Data Odyssey. Twenty missions. Tune the models, crack the riddles, escape the labyrinths and discover how data science really works.</p>
+  <div class="card" id="c1">
+    <div class="hs"><span>Previous high score</span><b id="hs">None yet</b></div>
+    <input id="nm" maxlength="14" placeholder="Enter your call-sign (name)" autocomplete="off">
+    <button class="b" onclick="launch()">START MISSION</button>
+    <button class="b g" onclick="openBrief()">MISSION BRIEFING &amp; PLAYTEST LOG</button>
+  </div>
+</section>
+
+<section class="scr" id="cd"><div id="cdn">3</div><div id="cdt"></div></section>
+
+<section class="scr" id="game">
+  <div class="hud">
+    <span class="pill hd" id="hn">AGENT</span>
+    <span class="pill">Level <b id="hl">1</b>/20</span>
+    <span class="pill">Shields <b id="hh"></b></span>
+    <span class="pill">Hints <b id="hi">2</b></span>
+    <span class="pill">Score <b id="hsc">0</b></span>
+    <span class="pill">Best <b id="hb">0</b></span>
+    <button class="b p" style="padding:6px 12px;font-size:.85rem" onclick="openBrief()">?</button>
+  </div>
+  <div class="prog" id="pg"></div>
+  <div class="info"><h2 id="it"></h2><p id="is"></p></div>
+  <div class="main"><canvas id="cvs" width="640" height="400"></canvas>
+    <div class="side"><div id="ctl"></div>
+      <button class="b" id="lk" onclick="lock()">LOCK IN</button>
+      <button class="b p" id="hb2" onclick="hint()">USE HINT</button>
+    </div></div>
+</section>
+
+<div class="md" id="md"><div class="mb" id="mb"><div class="em" id="me"></div><h2 id="mh"></h2><p id="mp"></p><div class="ds" id="md2" style="display:none"></div><div class="st2" id="ms"></div><button class="b" id="mbtn"></button></div></div>
+<div class="md" id="rd"><div class="mb"><h3 class="hd" style="color:var(--am)">SECURITY GATE</h3><p id="rq" style="color:var(--tx);font-size:.98rem"></p><canvas id="pc" width="480" height="220" style="width:100%;border:1px solid var(--ln);border-radius:10px;background:#070d1b"></canvas><div id="po" style="display:grid;gap:7px;text-align:left"></div><p id="rf"></p><div class="st2"><button class="b p" onclick="hint()">USE HINT</button><button class="b g" onclick="$('rd').classList.remove('on')">LEAVE GATE</button></div></div></div>
+
+<div class="md" id="br"><div class="mb">
+  <div class="tabs"><button class="b g" onclick="tab(0)">How to play</button><button class="b g" onclick="tab(1)">Learn</button><button class="b g" onclick="tab(2)">Playtest</button></div>
+  <div class="pane on"><ul><li><b>Goal:</b> clear all 20 levels across 5 stages. Each stage teaches one data science idea.</li><li><b>Play:</b> move the sliders, watch the live numbers and chart, then press <b>LOCK IN</b>. Nothing is explained up front: you discover the idea by experimenting.</li><li><b>Shields:</b> 3. A wrong lock-in, a wrong riddle or a failed attempt costs one. Zero shields = mission over.</li><li><b>Hints:</b> only 2 for the whole game. Use them wisely.</li><li><b>Mazes (stage 5):</b> arrow keys / WASD or the on-screen pad. Amber gates are hands-on data puzzles you solve by experimenting; skull cells are noise traps that cost points.</li><li><b>Score:</b> 100 per level + streak bonus. Your best score is saved on this device.</li></ul></div>
+  <div class="pane"><b>Learning objectives</b><ol><li><b>Stage 1:</b> explain least squares: the best line minimises squared residuals (MSE) and outliers pull it.</li><li><b>Stage 2:</b> distinguish underfitting from overfitting using train vs unseen test error; use regularisation (λ).</li><li><b>Stage 3:</b> read precision and recall and see why moving a threshold trades one for the other.</li><li><b>Stage 4:</b> run k-means and pick k with the elbow method.</li><li><b>Stage 5:</b> experiment your way to a confounder, an outlier-resistant statistic and sampling bias.</li></ol><p>All data is generated randomly each attempt; models are fitted live in your browser (normal equations, k-means, confusion matrix). Nothing is hard-coded.</p></div>
+  <div class="pane"><b>Playtest log:</b> let 3 to 5 peers play, then record each one's rating, what they understood and their feedback here (saved on this device). Use DOWNLOAD REPORT to attach the evidence to your submission.
+    <div style="display:grid;gap:7px;margin-top:8px"><input id="pn" placeholder="Playtester name"><select id="pr"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select><textarea id="pu" rows="2" placeholder="Evidence of learning: in their own words, what did the player understand after playing? (e.g. why a landline-only sample is biased)"></textarea><textarea id="pf" rows="2" placeholder="Feedback: what was fun, confusing or too hard?"></textarea><input id="ptg" placeholder="How far did they get? (e.g. Level 12, Stage 3)"><button class="b" onclick="savePT()">SAVE FEEDBACK</button><div class="st2"><button class="b g" onclick="exportPT()">DOWNLOAD REPORT</button><button class="b g" onclick="copyPT()">COPY REPORT</button><button class="b g" onclick="clearPT()">CLEAR LOG</button></div></div><div id="pl" style="margin-top:8px"></div></div>
+  <button class="b" onclick="$('br').classList.remove('on')">CLOSE</button>
+</div></div>
+
+<script>
+const $=i=>document.getElementById(i),R=Math.random,N=()=>Math.sqrt(-2*Math.log(1-R()))*Math.cos(6.2832*R()),avg=a=>a.reduce((s,v)=>s+v,0)/a.length;
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const ST=[
+{n:'Recruit Academy',g:'Fit a line by minimising squared error (least squares). Watch what outliers do.'},
+{n:'Navigator Deck',g:'Balance underfitting and overfitting. Only unseen test data tells the truth.'},
+{n:'Defender Grid',g:'Classify threats. Discover the trade-off between precision and recall.'},
+{n:'Analyst Observatory',g:'Find hidden groups with k-means. Choose k using the elbow.'},
+{n:'Commander Labyrinth',g:'Navigate mazes and crack hands-on puzzle gates: confounders, outliers and sampling bias.'}];
+const L=[];
+[[12,.05,0,.35,'Thruster Calibration'],[14,.09,0,.25,'Fuel Line Drift'],[16,.1,1,.15,'Ghost Residuals'],[18,.12,2,.1,'Outlier Storm']].forEach((v,i)=>L.push({t:'fit',n:v[0],s:v[1],o:v[2],tol:v[3],res:i<2,title:v[4],story:'Energy vs fuel. Slide slope (m) and intercept (b) until the line hugs the data. '+(i<2?'Residual lines show each miss.':'Residual lines are jammed: trust the MSE.')+(v[2]?' Purple points are corrupted readings.':'')}));
+[[x=>1-1.8*x*x,12,.08,0,'Hull Curvature'],[x=>Math.sin(2.6*x),14,.1,0,'Wave Forecast'],[x=>x**3-.6*x,12,.14,0,'Noisy Sensors'],[x=>.8*Math.sin(2.6*x)+.2*x,16,.12,1,'Corrupted Telemetry']].forEach(v=>L.push({t:'poly',f:v[0],n:v[1],s:v[2],o:v[3],title:v[4],story:'Fit the signal using degree (complexity) and λ (regularisation). You only see train error now; LOCK IN reveals the unseen test points. New data every attempt.'}));
+[[3.2,.5,60,.8,'Firewall Split'],[2.4,.3,70,.9,'Rare Intruders'],[1.8,.25,80,.95,'Stealth Malware'],[1.4,.2,90,.95,'Zero-Day Fog']].forEach(v=>L.push({t:'cls',sep:v[0],p:v[1],n:v[2],r:v[3],title:v[4],story:'Red dots are malware, blue are safe packets. Everything right of the threshold is flagged. Catch enough threats (recall) without drowning in false alarms (precision).'}));
+[[2,.5,'Twin Stars'],[3,.55,'Triple Nebula'],[4,.6,'Quad Cluster'],[4,.85,'Blurred Galaxies']].forEach(v=>L.push({t:'clu',k:v[0],s:v[1],title:v[2],story:'Unlabelled stars. Slide k to group them. The elbow chart records the error (inertia) of each k you try. Lock in the k that matches the real structure.'}));
+[[8,3,0,0,'Fog Corridor','Fog hides the walls. Explore and reach the green exit.'],[10,0,1,0,'Riddle Gate','An amber gate blocks the only path. Solve its data puzzle to pass.'],[11,0,2,5,'Noise Traps','Two puzzle gates. Skulls are noisy data traps (-30 pts).'],[13,4,3,8,'The Final Labyrinth','Fog, three puzzle gates and traps. Good luck, Commander.']].forEach(v=>L.push({t:'maze',n:v[0],fog:v[1],g:v[2],tr:v[3],title:v[4],story:v[5]}));
+
+const S={name:'Agent',lv:0,s:0,st:0,l:3,h:2,warp:1};
+const cv=$('cvs'),cx=cv.getContext('2d');
+let toastT;const say=(m,ms=3300)=>{const t=$('tt');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms)};
+
+/* ---------- starfield ---------- */
+const bg=$('bg'),bx=bg.getContext('2d');let stars=[];
+function rs(){bg.width=innerWidth;bg.height=innerHeight;stars=Array.from({length:130},()=>({x:R()*bg.width-bg.width/2,y:R()*bg.height-bg.height/2,z:R()*bg.width}))}
+addEventListener('resize',rs);rs();
+(function loop(){bx.fillStyle='rgba(4,6,13,.35)';bx.fillRect(0,0,bg.width,bg.height);const W=bg.width,H=bg.height;
+for(const s of stars){const px=s.x/s.z*W*.5+W/2,py=s.y/s.z*W*.5+H/2;s.z-=S.warp;if(s.z<1){s.z=W;s.x=R()*W-W/2;s.y=R()*H-H/2}
+const qx=s.x/(s.z+S.warp*2)*W*.5+W/2,qy=s.y/(s.z+S.warp*2)*W*.5+H/2;bx.strokeStyle=`rgba(150,${200+R()*55|0},255,${Math.min(1,1.4-s.z/W)})`;bx.lineWidth=Math.max(.6,2-s.z/W*2);bx.beginPath();bx.moveTo(qx,qy);bx.lineTo(px,py);bx.stroke()}
+requestAnimationFrame(loop)})();
+
+/* ---------- intro, countdown ---------- */
+function hsShow(){const h=store.get('si_hi',null);$('hs').textContent=h&&h.score>0?`${h.name} — ${h.score} pts`:'None yet (0 pts)'}
+function intro(){hsShow();const lines=['> BOOTING DEEP-SPACE ANALYTICS CORE...','> ORBITAL ARRAY LINK ............ OK','> INCOMING TRANSMISSION: "WE NEED A DATA SCIENTIST."'];let li=0,ci=0,out='';
+const tick=()=>{if(li>=lines.length){setTimeout(()=>{$('ttl').classList.add('show');setTimeout(()=>{$('tg').style.opacity=1;$('c1').classList.add('show')},1500)},350);return}
+out+=lines[li][ci++];$('boot').textContent=out;if(ci>=lines[li].length){li++;ci=0;out+='\n';setTimeout(tick,260)}else setTimeout(tick,22)};tick()}
+function launch(){const v=$('nm').value.trim();S.name=v||'Agent Nova';Object.assign(S,{lv:0,s:0,st:0,l:3,h:2});$('hn').textContent=S.name.toUpperCase();
+$('intro').classList.remove('on');$('cd').classList.add('on');
+const steps=[['3','SPOOLING DATA ENGINES...',4],['2','CALIBRATING SENSORS...',10],['1','LOCKING ONTO SIGNAL...',22],['GO','WELCOME ABOARD, '+S.name.toUpperCase(),60]];let i=0;
+(function step(){const n=$('cdn');n.textContent=steps[i][0];n.style.animation='none';void n.offsetWidth;n.style.animation='pop .8s ease-out';$('cdt').textContent=steps[i][1];S.warp=steps[i][2];i++;
+if(i<steps.length)setTimeout(step,900);else setTimeout(()=>{$('fl').style.opacity=.9;setTimeout(()=>{$('cd').classList.remove('on');$('game').classList.add('on');S.warp=1.2;$('fl').style.opacity=0;hud();stageCard()},350)},900)})()}
+
+/* ---------- HUD, modals ---------- */
+function hud(){$('hl').textContent=S.lv+1;$('hh').textContent='🛡'.repeat(S.l)+'·'.repeat(3-S.l);$('hi').textContent=S.h;$('hsc').textContent=S.s;$('hb2').disabled=S.h<=0;
+$('hb').textContent=Math.max(store.get('si_hi',{score:0}).score,S.s);$('pg').innerHTML=L.map((_,i)=>`<i class="${i<S.lv?'d':i==S.lv?'c':''}"></i>`).join('')}
+function saveHi(){const h=store.get('si_hi',{score:0});if(S.s>h.score)store.set('si_hi',{name:S.name,score:S.s})}
+function modal(cls,em,h,p,ds,stats,btn,fn){$('mb').className='mb '+cls;$('me').textContent=em;$('mh').textContent=h;$('mp').textContent=p;const d=$('md2');d.style.display=ds?'block':'none';d.textContent=ds||'';$('ms').innerHTML=stats.map(s=>`<span>${s}</span>`).join('');$('mbtn').textContent=btn;$('mbtn').onclick=()=>{$('md').classList.remove('on');fn()};$('md').classList.add('on')}
+function stageCard(){const k=S.lv/4|0,s=ST[k];modal('','🚀',`STAGE ${k+1}: ${s.n}`,s.g,'',[`Levels ${k*4+1}-${k*4+4}`,`Shields ${S.l}`,`Hints ${S.h}`],'ENGAGE',setup)}
+
+/* ---------- maths ---------- */
+function solve(A,b){const n=b.length,M=A.map((r,i)=>[...r,b[i]]);for(let c=0;c<n;c++){let m=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[m][c]))m=r;[M[c],M[m]]=[M[m],M[c]];if(Math.abs(M[c][c])<1e-13)continue;for(let r=c+1;r<n;r++){const f=M[r][c]/M[c][c];for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k]}}
+const w=Array(n).fill(0);for(let i=n-1;i>=0;i--){let s=M[i][n];for(let j=i+1;j<n;j++)s-=M[i][j]*w[j];w[i]=Math.abs(M[i][i])<1e-13?0:s/M[i][i]}return w}
+function fitPoly(P,d,lam){const p=d+1,A=Array.from({length:p},(_,r)=>Array.from({length:p},(_,c)=>P.reduce((s,q)=>s+q.x**(r+c),0)+(r==c&&r>0?lam:0)+(r==c?1e-9:0))),b=Array.from({length:p},(_,r)=>P.reduce((s,q)=>s+q.y*q.x**r,0));return solve(A,b)}
+const evalP=(w,x)=>w.reduce((s,c,i)=>s+c*x**i,0),mseP=(w,P)=>avg(P.map(q=>(evalP(w,q.x)-q.y)**2));
+function km(P,k){let best=null;for(let r=0;r<8;r++){let c=[P[R()*P.length|0]];while(c.length<k){const d=P.map(p=>Math.min(...c.map(q=>(p.x-q.x)**2+(p.y-q.y)**2)));let t=d.reduce((a,b)=>a+b)*R(),i=0;while(i<P.length-1&&(t-=d[i])>0)i++;c.push(P[i])}
+c=c.map(q=>({x:q.x,y:q.y}));let a=[];for(let it=0;it<15;it++){a=P.map(p=>{let bi=0,bd=9;c.forEach((q,i)=>{const d=(p.x-q.x)**2+(p.y-q.y)**2;if(d<bd){bd=d;bi=i}});return bi});c=c.map((q,i)=>{const m=P.filter((p,j)=>a[j]==i);return m.length?{x:avg(m.map(p=>p.x)),y:avg(m.map(p=>p.y))}:q})}
+const e=P.reduce((s,p,j)=>s+(p.x-c[a[j]].x)**2+(p.y-c[a[j]].y)**2,0);if(!best||e<best.e)best={c,a,e}}return best}
+
+/* ---------- level setup ---------- */
+const sl=(id,lb,mn,mx,st,v)=>`<label>${lb}<b id="${id}v"></b></label><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${v}" oninput="upd()">`;
+const box=(a,b)=>`<div class="bx"><div>${a}<b id="s1">-</b></div><div>${b}<b id="s2">-</b></div><div class="n" id="s3"></div></div>`;
+function setup(){const l=L[S.lv];S.show=false;S.k=2;hud();$('it').textContent=`Level ${S.lv+1} · ${l.title}`;$('is').textContent=l.story;$('lk').style.display=l.t=='maze'?'none':'block';
+let h='';
+if(l.t=='fit'){const a=.5+R()*1.1,b=.1+R()*.4;S.d=[];for(let i=0;i<l.n;i++){const x=.05+.9*i/(l.n-1)+(R()-.5)*.03;S.d.push({x,y:a*x+b+N()*l.s,o:0})}
+for(let i=0;i<l.o;i++){const p=S.d[Math.floor(l.n*(i+1)/(l.o+1))];p.y+=(i%2?-.5:.5);p.o=1}
+const mx=avg(S.d.map(p=>p.x)),my=avg(S.d.map(p=>p.y));S.m1=S.d.reduce((s,p)=>s+(p.x-mx)*(p.y-my),0)/S.d.reduce((s,p)=>s+(p.x-mx)**2,0);S.b1=my-S.m1*mx;
+S.goal=avg(S.d.map(p=>(S.m1*p.x+S.b1-p.y)**2))*(1+l.tol)+.0008;h=sl('a','Slope (m)',-1,3,.01,0)+sl('c','Intercept (b)',-.5,1.5,.01,.5)+box('Your MSE','Goal MSE ≤')}
+if(l.t=='poly'){const mk=n=>Array.from({length:n},(_,i)=>{const x=-.95+1.9*i/(n-1)+(R()-.5)*.04;return{x,y:l.f(x)+N()*l.s}});S.d=mk(l.n);S.te=mk(60);
+if(l.o)for(const i of [3,l.n-4]){S.d[i].y+=i==3?.7:-.7;S.d[i].o=1}
+let best=9,bd=1;for(let d=1;d<=9;d++)for(const lam of [0,.001,.01,.1,1]){const e=mseP(fitPoly(S.d,d,lam),S.te);if(e<best){best=e;bd=d}}S.tg=best*1.4+.003;S.bd=bd;S.rev=false;
+h=sl('a','Model degree (complexity)',1,9,1,1)+sl('c','Regularisation λ',0,100,1,0)+box('Train MSE','Test MSE')}
+if(l.t=='cls'){S.d=[];const nm=Math.round(l.n*l.p);for(let i=0;i<l.n;i++){const m=i<nm;S.d.push({x:N()+(m?l.sep:0),m,j:R()})}
+const xs=S.d.map(p=>p.x),ev=t=>{const tp=S.d.filter(p=>p.m&&p.x>=t).length,fp=S.d.filter(p=>!p.m&&p.x>=t).length;return{r:tp/nm,p:tp+fp?tp/(tp+fp):0}};S.ev=ev;S.nm=nm;
+let bp=0;xs.forEach(t=>{const e=ev(t);if(e.r>=l.r&&e.p>bp)bp=e.p});S.pt=bp*.9;S.lo=Math.min(...xs)-.3;S.hi=Math.max(...xs)+.3;
+h=sl('a','Alert threshold',Math.floor(S.lo*10)/10,Math.ceil(S.hi*10)/10,.05,(S.lo+S.hi)/2)+box('Recall','Precision')}
+if(l.t=='clu'){const c=[];while(c.length<l.k){const q={x:.15+R()*.7,y:.15+R()*.7};if(c.every(z=>Math.hypot(z.x-q.x,z.y-q.y)>(l.s>.8?.3:.36)))c.push(q)}
+S.d=[];c.forEach(q=>{for(let i=0;i<25;i++)S.d.push({x:q.x+N()*l.s*.1,y:q.y+N()*l.s*.1})});S.km={};for(let k=1;k<=7;k++)S.km[k]=km(S.d,k);S.tried=new Set();
+h=sl('a','Number of clusters (k)',1,7,1,2)+box('Inertia (error)','Tip')}
+if(l.t=='maze')mazeInit(l),h=`<div class="dp"><button onclick="mv(0,-1)">▲</button><div><button onclick="mv(-1,0)">◀</button><button onclick="mv(0,1)">▼</button><button onclick="mv(1,0)">▶</button></div></div>`+box('Moves','Par (best)');
+$('ctl').innerHTML=h;upd()}
+
+/* ---------- update + draw ---------- */
+const fr=()=>{cx.fillStyle='#070d1b';cx.fillRect(0,0,640,400);cx.strokeStyle='rgba(53,224,255,.09)';cx.lineWidth=1;cx.beginPath();for(let i=0;i<=10;i++){cx.moveTo(i*64,0);cx.lineTo(i*64,400);cx.moveTo(0,i*40);cx.lineTo(640,i*40)}cx.stroke()};
+const dot=(x,y,r,c,s)=>{cx.beginPath();cx.arc(x,y,r,0,7);cx.fillStyle=c;cx.fill();if(s){cx.strokeStyle=s;cx.lineWidth=2;cx.stroke()}};
+const ln=(a,b,c,d,col,w,ds)=>{cx.beginPath();cx.setLineDash(ds||[]);cx.moveTo(a,b);cx.lineTo(c,d);cx.strokeStyle=col;cx.lineWidth=w||2;cx.stroke();cx.setLineDash([])};
+const txt=(t,x,y,c,sz)=>{cx.fillStyle=c||'#e6f1ff';cx.font=(sz||14)+'px Chakra Petch,sans-serif';cx.fillText(t,x,y)};
+const CL=['#35e0ff','#a78bfa','#34f5a0','#ffb020','#ff4d6d','#f472b6','#facc15'];
+const $v=i=>+($(i)||{}).value;
+function upd(){const l=L[S.lv],t=l.t,a=$v('a'),c=$v('c');
+if(t=='fit'){S.m=a;S.b=c;$('av').textContent=a.toFixed(2)}
+draw(l,a,c)}
+function draw(l,a,c){const t=l.t;fr();const set=(i,v)=>{if($(i))$(i).textContent=v};
+if(t=='fit'){S.m=a;S.b=c;set('av',a.toFixed(2));set('cv',c.toFixed(2));const px=x=>30+x*580,py=y=>370-(y+.3)/2.3*340,e=avg(S.d.map(p=>(a*p.x+c-p.y)**2));
+if(S.show)ln(px(0),py(S.b1),px(1),py(S.m1+S.b1),'#34f5a0',2,[6,5]);
+if(l.res)S.d.forEach(p=>ln(px(p.x),py(p.y),px(p.x),py(a*p.x+c),'rgba(255,77,109,.7)',2));
+ln(px(0),py(c),px(1),py(a+c),'#ffb020',3);S.d.forEach(p=>dot(px(p.x),py(p.y),p.o?7:5.5,p.o?'#a78bfa':'#35e0ff','#04060d'));
+set('s1',e.toFixed(4));set('s2','≤ '+S.goal.toFixed(4));set('s3',e<=S.goal?'Within target. Lock it in!':'Shrink the red squared misses.')}
+if(t=='poly'){const d=a|0,lam=c==0?0:10**(c/100*5-4);set('av',d);set('cv',lam?lam.toExponential(1):'0');S.w=fitPoly(S.d,d,lam);S.trn=mseP(S.w,S.d);
+const px=x=>30+(x+1)/2*580,py=y=>370-(Math.max(-1.7,Math.min(1.7,y))+1.6)/3.3*340;
+if(S.rev){ln(px(-1),py(l.f(-1)),px(1),py(l.f(1)),'transparent');cx.beginPath();for(let i=0;i<=80;i++){const x=-1+i/40;i?cx.lineTo(px(x),py(l.f(x))):cx.moveTo(px(x),py(l.f(x)))}cx.strokeStyle='#34f5a0';cx.setLineDash([6,5]);cx.lineWidth=2;cx.stroke();cx.setLineDash([]);S.te.forEach(p=>dot(px(p.x),py(p.y),3.5,'#ff4d6d'))}
+cx.beginPath();for(let i=0;i<=120;i++){const x=-1+i/60,y=py(evalP(S.w,x));i?cx.lineTo(px(x),y):cx.moveTo(px(x),y)}cx.strokeStyle='#ffb020';cx.lineWidth=3;cx.stroke();
+S.d.forEach(p=>dot(px(p.x),py(p.y),p.o?7:5.5,p.o?'#a78bfa':'#35e0ff','#04060d'));
+set('s1',S.trn.toFixed(4));set('s2',S.rev?mseP(S.w,S.te).toFixed(4):'hidden');set('s3',S.rev?`Goal: test MSE ≤ ${S.tg.toFixed(4)}`:'Goal: low error on UNSEEN data, not just on these dots.')}
+if(t=='cls'){S.t=a;set('av',a.toFixed(2));const px=x=>20+(x-S.lo)/(S.hi-S.lo)*600,e=S.ev(a);cx.fillStyle='rgba(255,77,109,.12)';cx.fillRect(px(a),0,640-px(a),400);
+if(S.show){const ok=[];for(let x=S.lo;x<S.hi;x+=.05){const q=S.ev(x);if(q.r>=l.r&&q.p>=S.pt)ok.push(x)}if(ok.length){cx.fillStyle='rgba(52,245,160,.2)';cx.fillRect(px(ok[0]),0,px(ok[ok.length-1])-px(ok[0])+8,400)}}
+ln(px(a),0,px(a),400,'#ffb020',3);S.d.forEach(p=>{const fl=p.x>=a,bad=fl!=p.m;dot(px(p.x),40+p.j*320,6,p.m?'#ff4d6d':'#35e0ff',bad?'#fff':null)});txt('SAFE ◀',24,24,'#35e0ff');txt('▶ FLAGGED',px(a)+8,24,'#ff4d6d');txt('white ring = wrong call',24,392,'#8aa0c0',12);
+const tp=Math.round(e.r*S.nm);set('s1',(e.r*100|0)+'%');set('s2',(e.p*100|0)+'%');set('s3',`Goal: recall ≥ ${l.r*100|0}% and precision ≥ ${S.pt*100|0}%. Caught ${tp}/${S.nm} threats.`)}
+if(t=='clu'){const k=a|0;S.k=k;S.tried.add(k);set('av',k);const m=S.km[k],px=x=>20+x*400,py=y=>20+y*360;S.d.forEach((p,i)=>dot(px(p.x),py(p.y),4.5,CL[m.a[i]]));m.c.forEach((q,i)=>{dot(px(q.x),py(q.y),9,'#04060d',CL[i]);txt('✚',px(q.x)-6,py(q.y)+5,'#fff',13)});
+ln(440,20,440,380,'#1d3354');txt('Elbow chart',455,30,'#8aa0c0',13);const mx=S.km[1].e,gx=k2=>455+(k2-1)*28,gy=e=>360-e/mx*300;txt('k →',590,378,'#8aa0c0',12);
+let prev=null;for(let k2=1;k2<=7;k2++){if(S.tried.has(k2)||S.show){const p={x:gx(k2),y:gy(S.km[k2].e)};if(prev)ln(prev.x,prev.y,p.x,p.y,'#35e0ff',2);dot(p.x,p.y,5,k2==k?'#ffb020':'#35e0ff');txt(k2,p.x-3,375,'#8aa0c0',11);prev=p}}
+set('s1',m.e.toFixed(2));set('s2','Find the bend');set('s3','Inertia always falls as k grows. Lowest is not best: look for where the drop flattens.')}
+if(t=='maze')mazeDraw(l)}
+
+/* ---------- maze ---------- */
+function mazeInit(l){const n=l.n,g=Array.from({length:n},()=>Array(n).fill(0)),vs=Array.from({length:n},()=>Array(n).fill(0)),stk=[[0,0]];vs[0][0]=1;const D=[[0,-1,1,4],[1,0,2,8],[0,1,4,1],[-1,0,8,2]];
+while(stk.length){const[x,y]=stk[stk.length-1],o=D.filter(d=>{const u=x+d[0],v=y+d[1];return u>=0&&v>=0&&u<n&&v<n&&!vs[v][u]});if(!o.length){stk.pop();continue}const d=o[R()*o.length|0],u=x+d[0],v=y+d[1];g[y][x]|=d[2];g[v][u]|=d[3];vs[v][u]=1;stk.push([u,v])}
+const prev={},q=[[0,0]],sn=new Set(['0,0']);while(q.length){const[x,y]=q.shift();D.forEach(d=>{if(g[y][x]&d[2]){const u=x+d[0],v=y+d[1],k=u+','+v;if(!sn.has(k)){sn.add(k);prev[k]=[x,y];q.push([u,v])}}})}
+const path=[];let cur=[n-1,n-1];while(cur){path.unshift(cur);cur=prev[cur[0]+','+cur[1]]}
+S.g=g;S.path=path;S.px=0;S.py=0;S.mv=0;S.gates={};S.traps={};S.seen=new Set(['0,0']);S.rq=['conf','out','samp'].sort(()=>R()-.5);
+for(let i=0;i<l.g;i++){const p=path[Math.floor(path.length*(i+1)/(l.g+1))];S.gates[p[0]+','+p[1]]=S.rq[i]}
+let tr=0;while(tr<l.tr){const x=R()*n|0,y=R()*n|0,k=x+','+y;if(!S.gates[k]&&!S.traps[k]&&(x+y>1)&&(x<n-1||y<n-1)){S.traps[k]=1;tr++}}}
+function mv(dx,dy){const l=L[S.lv];if(l.t!='maze'||$('md').classList.contains('on')||$('rd').classList.contains('on')||!$('game').classList.contains('on'))return;
+const bit=dx==1?2:dx==-1?8:dy==1?4:1;if(!(S.g[S.py][S.px]&bit))return;const x=S.px+dx,y=S.py+dy,k=x+','+y;
+if(S.gates[k]){return riddle(k)}step(x,y,k)}
+function step(x,y,k){const l=L[S.lv];S.px=x;S.py=y;S.mv++;S.seen.add(k);if(S.traps[k]){delete S.traps[k];S.s=Math.max(0,S.s-30);hud();say('☠ Noise trap! -30 points. Outliers cost you.')}
+if(x==l.n-1&&y==l.n-1){const par=S.path.length-1,b=Math.max(0,par*3-S.mv)*2;win(`Escaped in ${S.mv} moves (par ${par}).`,'Discovery: systematic search beats random wandering, and the puzzles showed how bias, confounders and outliers quietly corrupt data.',b)}else upd()}
+function mazeDraw(l){const n=l.n,cs=Math.floor(380/n),ox=(640-cs*n)/2,oy=(400-cs*n)/2;fr();const vis=(x,y)=>!l.fog||Math.hypot(x-S.px,y-S.py)<=l.fog;
+if(S.show)S.path.forEach(p=>{cx.fillStyle='rgba(52,245,160,.28)';cx.fillRect(ox+p[0]*cs+2,oy+p[1]*cs+2,cs-4,cs-4)});
+for(let y=0;y<n;y++)for(let x=0;x<n;x++){const v=vis(x,y),sn=S.seen.has(x+','+y);if(l.fog&&!v&&!sn){cx.fillStyle='#02040a';cx.fillRect(ox+x*cs,oy+y*cs,cs,cs);continue}
+const k=x+','+y,X=ox+x*cs,Y=oy+y*cs;cx.globalAlpha=v?1:.35;
+if(x==n-1&&y==n-1){cx.fillStyle='rgba(52,245,160,.35)';cx.fillRect(X+2,Y+2,cs-4,cs-4);txt('EXIT',X+3,Y+cs/2+4,'#34f5a0',Math.min(12,cs/3))}
+if(S.gates[k]){cx.fillStyle='rgba(255,176,32,.3)';cx.fillRect(X+2,Y+2,cs-4,cs-4);txt('?',X+cs/2-4,Y+cs/2+6,'#ffb020',18)}
+if(S.traps[k]&&v)txt('☠',X+cs/2-8,Y+cs/2+6,'#ff4d6d',16);
+const w=S.g[y][x];if(!(w&1))ln(X,Y,X+cs,Y,'#35e0ff',2);if(!(w&8))ln(X,Y,X,Y+cs,'#35e0ff',2);if(x==n-1)ln(X+cs,Y,X+cs,Y+cs,'#35e0ff',2);if(y==n-1)ln(X,Y+cs,X+cs,Y+cs,'#35e0ff',2);cx.globalAlpha=1}
+dot(ox+S.px*cs+cs/2,oy+S.py*cs+cs/2,cs/3,'#ffb020','#fff');
+if($('s1')){$('s1').textContent=S.mv;$('s2').textContent=S.path.length-1;$('s3').textContent=l.g?`Gates left: ${Object.keys(S.gates).length}. Move with arrows / WASD.`:'Move with arrows / WASD.'}}
+addEventListener('keydown',e=>{const m={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[e.key];if(m&&document.activeElement.tagName!='INPUT'){e.preventDefault();mv(...m)}});
+const cor=(a,b)=>{const ma=avg(a),mb=avg(b);let c=0,x=0,y=0;a.forEach((v,i)=>{c+=(v-ma)*(b[i]-mb);x+=(v-ma)**2;y+=(b[i]-mb)**2});return c/Math.sqrt(x*y)};
+const pcx=$('pc').getContext('2d'),sl2=(id,lb,mn,mx,st,v)=>`<label style="display:flex;justify-content:space-between;color:var(--mu);font-size:.88rem">${lb}<b id="${id}v" style="color:var(--am)"></b></label><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${v}" oninput="pz()">`;
+function riddle(k){S.cur=k;const t=S.gates[k],q=$('rq'),o=$('po');S.pz={t,h:[]};$('rf').textContent='';
+if(t=='conf'){S.pz.d=Array.from({length:80},()=>{const T=5+R()*30;return{T,x:3*T+N()*10,y:.4*T+N()*2.5}});q.textContent='Clue: ice-cream sales and drownings rise together. Does one cause the other? Slide the temperature window to a narrow band and watch the correlation r.';o.innerHTML=sl2('p1','Window width (°C)',3,30,1,30)+sl2('p2','Window start (°C)',5,35,1,5)+'<button class="b" onclick="pzGo()">OPEN GATE</button>'}
+else if(t=='out'){const b=Array.from({length:10},()=>Math.round(30+N()*4));S.pz.d=[...b,780+(R()*200|0),240+(R()*40|0)].sort((a,c)=>a-c);S.pz.med=S.pz.d[5]/2+S.pz.d[6]/2;q.textContent='Clue: twelve salaries (in thousands) include two extreme earners, so the average lies about the typical person. Remove the richest values until the mean matches the median, but do not delete honest data.';o.innerHTML=sl2('p1','Remove the richest k',0,6,1,0)+'<button class="b" onclick="pzGo()">OPEN GATE</button>'}
+else{S.pz.pop=Array.from({length:2000},()=>{const l=R()<.25;return{l,v:R()<(l?.25:.62)?1:0}});S.pz.tr=avg(S.pz.pop.map(p=>p.v));q.textContent='Clue: estimate the share of people who support a policy. Choose how to sample and how big. Land within 4 points of the true share.';o.innerHTML='<select id="pm"><option value="l">Phone landline numbers only</option><option value="r">Random sample of everyone</option></select>'+sl2('p1','Sample size',10,400,10,50)+'<button class="b" onclick="pzGo()">DRAW SAMPLE</button>'}
+$('rd').classList.add('on');pz()}
+function pzSub(){const p=S.pz,w=+$('p1').value,s0=+$('p2').value;return p.d.filter(q=>q.T>=s0&&q.T<=s0+w)}
+function pz(){const p=S.pz,g=pcx,set=(i,v)=>{if($(i))$(i).textContent=v};set('p1v',$('p1').value);set('p2v',$('p2')?$('p2').value:'');g.clearRect(0,0,480,220);
+if(p.t=='conf'){const sub=pzSub(),X=v=>20+v/140*440,Y=v=>205-(v+6)/26*195;p.d.forEach(q=>{g.beginPath();g.arc(X(q.x),Y(q.y),sub.includes(q)?5:3,0,7);g.fillStyle=sub.includes(q)?'#ffb020':'#3b4d6e';g.fill()});g.fillStyle='#8aa0c0';g.font='12px sans-serif';g.fillText('ice-cream sales →  (up: drownings)',24,214);
+const ro=cor(p.d.map(q=>q.x),p.d.map(q=>q.y));p.r=sub.length>=3?cor(sub.map(q=>q.x),sub.map(q=>q.y)):NaN;$('rf').textContent=`All data r = ${ro.toFixed(2)}. Inside window (${sub.length} pts): r = ${isNaN(p.r)?'?':p.r.toFixed(2)}`}
+if(p.t=='out'){const k=+$('p1').value,n=p.d.length,keep=p.d.slice(0,n-k),mean=avg(keep),mx=Math.max(...p.d);p.k=k;p.mean=mean;p.d.forEach((v,i)=>{g.fillStyle=i<n-k?'#35e0ff':'#3b4d6e';const h=v/mx*170;g.fillRect(20+i*37,200-h,28,h)});
+const my=200-mean/mx*170,dy=200-p.med/mx*170;g.strokeStyle='#ff4d6d';g.setLineDash([5,4]);g.beginPath();g.moveTo(20,my);g.lineTo(470,my);g.stroke();g.strokeStyle='#34f5a0';g.beginPath();g.moveTo(20,dy);g.lineTo(470,dy);g.stroke();g.setLineDash([]);g.fillStyle='#ff4d6d';g.font='12px sans-serif';g.fillText('mean',430,Math.min(my-4,195));g.fillStyle='#34f5a0';g.fillText('median',420,dy-4);$('rf').textContent=`Mean ${mean.toFixed(0)}k · Median of all 12 = ${p.med.toFixed(0)}k`}
+if(p.t=='samp'){g.strokeStyle='#1d3354';g.strokeRect(20,10,440,195);g.fillStyle='#8aa0c0';g.font='12px sans-serif';g.fillText('sample size →   (up: estimated support %)',24,217);if(p.won){const y=205-p.tr*195;g.strokeStyle='#34f5a0';g.beginPath();g.moveTo(20,y);g.lineTo(460,y);g.stroke();g.fillStyle='#34f5a0';g.fillText('true share '+(p.tr*100|0)+'%',360,y-4)}
+p.h.forEach(q=>{g.beginPath();g.arc(20+q.n/400*440,205-q.e*195,5,0,7);g.fillStyle=q.m=='l'?'#ff4d6d':'#35e0ff';g.fill()});$('rf').textContent=p.h.length?`Last estimate: ${(p.h[p.h.length-1].e*100).toFixed(0)}% (red = landline, blue = random)`:'Draw a few samples and compare.'}}
+function pzDone(msg){$('rd').classList.remove('on');const[x,y]=S.cur.split(',').map(Number);delete S.gates[S.cur];say('✔ Gate open. '+msg,6500);step(x,y,S.cur)}
+function pzGo(){const p=S.pz;
+if(p.t=='conf'){const n=pzSub().length;if(n>=12&&Math.abs(p.r)<.3)pzDone('Inside one temperature band the link almost vanishes: temperature was a hidden confounder. Correlation is not causation.');else $('rf').textContent+=n<12?' · Window too small, too few points.':' · Still correlated. Narrow the window.'}
+if(p.t=='out'){const med=p.med;if(p.k>3)$('rf').textContent+=' · Over-trimming throws away honest data.';else if(Math.abs(p.mean-med)/med<=.1&&p.k>0)pzDone('The median ignores extremes; the mean does not. Trim only genuine outliers.');else $('rf').textContent+=' · The mean is still far from the median.'}
+if(p.t=='samp'){const pool=$('pm').value=='l'?p.pop.filter(q=>q.l):p.pop,n=+$('p1').value;let s=0;for(let i=0;i<n;i++)s+=pool[R()*pool.length|0].v;const e=s/n;p.h.push({n,e,m:$('pm').value});const m=$('pm').value,close=Math.abs(e-p.tr)<=.04;if(m=='l'){pz();$('rf').textContent+=close?' · Close by luck, but a landline-only sample is biased, so it cannot unlock the gate. Switch to a random sample.':' · Landline-only samples miss most of the population. Try increasing n, then compare with a random sample.';p.seenL=1}else if(close&&!p.seenL){pz();$('rf').textContent+=' · Close, but first draw a landline-only sample to compare the two methods.'}else if(close){p.won=1;pz();setTimeout(()=>pzDone(`Random sampling gets close to the truth (${(p.tr*100|0)}%). A biased sample stays wrong however large it gets.`),900)}else{pz();$('rf').textContent+=' · Not within 4 points.'}}}
+
+/* ---------- hints, lock, outcomes ---------- */
+function hint(){if(S.h<=0)return say('No hints left.');const l=L[S.lv];S.h--;hud();
+if($('rd').classList.contains('on')){const p=S.pz,st=(i,v)=>{$(i).value=v};if(p.t=='conf'){st('p1',7);st('p2',18)}else if(p.t=='out')st('p1',2);else{st('pm','r');st('p1',200)}pz();return}
+if(l.t=='poly')say(`Hint: the best models here use around degree ${S.bd}. Then nudge λ up if the curve wiggles.`,5500);
+else if(l.t=='maze'){S.show=true;setTimeout(()=>{S.show=false;upd()},3500);say('Hint: the green route is the shortest path.')}
+else{S.show=true;say(l.t=='fit'?'Hint: green dashed line = least-squares optimum.':l.t=='cls'?'Hint: the green band is a threshold range that meets both goals.':'Hint: the full elbow chart is now visible.',5000)}upd()}
+function lock(){const l=L[S.lv];let ok,why;
+if(l.t=='fit'){const e=avg(S.d.map(p=>(S.m*p.x+S.b-p.y)**2));ok=e<=S.goal;why=`Your MSE ${e.toFixed(4)} vs goal ${S.goal.toFixed(4)}. Squared misses add up fast for far-off points.`;if(ok)return win(`MSE ${e.toFixed(4)} ≤ ${S.goal.toFixed(4)}`,'Discovery: the best line minimises the SUM OF SQUARED residuals (least squares). Because errors are squared, outliers drag the line hard.')}
+if(l.t=='poly'){S.rev=true;const te=mseP(S.w,S.te);draw(l,$v('a'),$v('c'));ok=te<=S.tg;const d=$v('a');why=te>3*S.trn&&d>3?`Overfitting! Train MSE ${S.trn.toFixed(3)} but test MSE ${te.toFixed(3)}. The curve chased noise.`:`Underfitting or weak fit. Test MSE ${te.toFixed(3)} is above the goal ${S.tg.toFixed(3)}.`;
+if(ok)return win(`Test MSE ${te.toFixed(3)} ≤ ${S.tg.toFixed(3)}`,'Discovery: low train error does not mean a good model. Too simple underfits, too flexible overfits noise. λ tames wild weights, and only unseen test data reveals the truth.')}
+if(l.t=='cls'){const e=S.ev(S.t);ok=e.r>=l.r&&e.p>=S.pt;why=e.r<l.r?`Too many threats slipped through: recall ${e.r*100|0}% (need ${l.r*100|0}%). Lower the threshold.`:`Too many false alarms: precision ${e.p*100|0}% (need ${S.pt*100|0}%). Raise the threshold.`;if(ok)return win(`Recall ${e.r*100|0}% · Precision ${e.p*100|0}%`,'Discovery: moving the threshold trades recall (threats caught) against precision (alerts that are real). With overlapping classes you cannot max both.')}
+if(l.t=='clu'){ok=S.k==l.k;why=S.k<l.k?`k=${S.k} merges distinct groups: inertia is still dropping sharply at the next k.`:`k=${S.k} splits natural groups: the inertia gain is tiny after the elbow.`;if(ok)return win(`k=${S.k} matches the elbow`,'Discovery: inertia always falls as k grows, so the lowest error is not the best answer. Choose the elbow, where improvement flattens.')}
+lose(why)}
+function win(info,ins,bonus=0){S.st++;const g=100+S.st*25+bonus;S.s+=g;saveHi();hud();const last=S.lv==19;
+modal('w',last?'🏆':'🎉',last?`Mission Accomplished, ${S.name}!`:pick(['Good job','Excellent work','Signal locked'])+', '+S.name+'!',info,ins,[`+${g} pts`,`Streak ${S.st}x`,`Shields ${S.l}`],last?'PLAY AGAIN':'NEXT LEVEL',()=>{if(last){S.lv=0;S.s=0;S.l=3;S.h=2;S.st=0;stageCard()}else{S.lv++;S.lv%4==0?stageCard():setup()}})}
+const pick=a=>a[R()*a.length|0];
+function lose(why){S.st=0;S.l--;hud();if(S.l<=0)return over(why);modal('l','⚠️','Better luck next time!',why,'',[`Shields left ${S.l}`,`Hints left ${S.h}`],'TRY AGAIN',setup)}
+function over(why){saveHi();hud();modal('l','💥','Better luck next time!',why+` Your shields are down, ${S.name}.`,'',[`Final score ${S.s}`,`Reached level ${S.lv+1}`],'RESTART MISSION',()=>{S.lv=0;S.s=0;S.l=3;S.h=2;S.st=0;stageCard()})}
+
+/* ---------- briefing + playtest ---------- */
+function openBrief(){$('br').classList.add('on');renderPT()}
+function tab(i){document.querySelectorAll('#br .pane').forEach((p,j)=>p.classList.toggle('on',i==j))}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function savePT(){const f=$('pf').value.trim(),u=$('pu').value.trim();if(!f&&!u)return say('Write what the player understood or a short comment first.');const a=store.get('si_pt',[]);a.push({n:$('pn').value.trim()||'Anonymous',r:+$('pr').value,u,f,g:$('ptg').value.trim(),d:new Date().toLocaleDateString()});store.set('si_pt',a);['pf','pu','pn','ptg'].forEach(i=>$(i).value='');renderPT();say('Feedback saved. Thank you!')}
+function renderPT(){const a=store.get('si_pt',[]);$('pl').innerHTML=a.length?`<b>${a.length} playtester(s), average rating ${avg(a.map(x=>x.r)).toFixed(1)}/5</b>${a.length<3?'<br><span style="color:var(--am)">Rubric asks for 3 to 5 peers: '+(3-a.length)+' more needed.</span>':''}<ul>${a.map(x=>`<li><b>${esc(x.n)}</b> (${x.r}/5${x.g?', reached: '+esc(x.g):''})${x.u?'<br><i>Understood:</i> '+esc(x.u):''}${x.f?'<br><i>Feedback:</i> '+esc(x.f):''}</li>`).join('')}</ul>`:'No feedback yet.'}
+function ptReport(){const a=store.get('si_pt',[]);if(!a.length)return'';return'SIGNAL INTERCEPTOR: PLAYTEST REPORT\nPlaytesters: '+a.length+'   Average rating: '+avg(a.map(x=>x.r)).toFixed(1)+'/5\n\n'+a.map((x,i)=>`${i+1}. ${x.n} | rating ${x.r}/5 | ${x.d||''} | reached: ${x.g||'n/a'}\n   Understood: ${x.u||'n/a'}\n   Feedback: ${x.f||'n/a'}`).join('\n\n')}
+function exportPT(){const t=ptReport();if(!t)return say('Nothing to export yet.');const b=new Blob([t],{type:'text/plain'}),l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='playtest_report.txt';l.click();URL.revokeObjectURL(l.href)}
+function copyPT(){const t=ptReport();if(!t)return say('Nothing to copy yet.');if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>say('Report copied.'),()=>say('Copy blocked: use DOWNLOAD REPORT.'));else say('Copy not supported: use DOWNLOAD REPORT.')}
+function clearPT(){if(confirm('Delete all saved playtest feedback on this device?')){store.set('si_pt',[]);renderPT()}}
+intro();
+</script></body></html>
