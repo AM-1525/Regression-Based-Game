@@ -28,4 +28,4 @@ All data is generated randomly each attempt. Models are fitted live in the brows
 ## Playtest evidence
 Open **Mission Briefing & Playtest Log** > **Playtest**. For each of 3 to 5 peers, record name, rating, how far they got, what they understood in their own words, and feedback. Use **Download report** to export `playtest_report.txt`.
 
-*(Add your screenshots and the exported report to your submission.)*
+
